@@ -238,7 +238,8 @@ class DOIBuilder(Builder):
         try:
             self.log_info_msg("Start Syncing. This will take long")
             all_keys = self.materials_store.distinct(
-                field=self.materials_store.key, criteria={"sbxn": "core"}
+                field=self.materials_store.key,
+                criteria={"$and": [{"sbxd.id": "core"}, {"sbxn": "core"}]},
             )  # this might fail in the future
 
             self.log_info_msg(f"[{len(all_keys)}] requires syncing")
@@ -285,7 +286,7 @@ class DOIBuilder(Builder):
                 if elink.osti_id in bibtex_dict_raw:
                     bibtex_dict[elink.accession_num] = bibtex_dict_raw[elink.osti_id]
             self.log_info_msg(
-                f"Found and downded [{len(bibtex_dict)}] records from Explorer."
+                f"Found and downloaded [{len(bibtex_dict)}] records from Explorer."
             )
         except HTTPError:
             bibtex_dict = dict()

@@ -209,9 +209,13 @@ class ELinkAdapter(Adapter):
             # chunck it up
             result = []
             for i in tqdm(range(0, len(mp_ids), chunk_size)):
-                chunk = self.get_multiple_helper(mp_ids=mp_ids[i : i + chunk_size])
-                result.extend(chunk)
-                time.sleep(1)
+                try:
+                    chunk = self.get_multiple_helper(mp_ids=mp_ids[i : i + chunk_size])
+                    result.extend(chunk)
+                    time.sleep(1)
+                except HTTPError:
+                    self.logger.error("Failed to get batch, skipping")
+
             return result
         else:
             return self.get_multiple_helper(mp_ids=mp_ids)
